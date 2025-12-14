@@ -1,15 +1,22 @@
 # PEAK PCAN-USB Module
 I have tested with Peak PCAN-USB opto-decoupled IPEH-002022 (https://www.peak-system.com/PCAN-USB.199.0.html?L=1).
 We do not need to install the driver since PCAN Module comes with default linux socket-can driver (https://python-can.readthedocs.io/en/stable/interfaces/pcan.html) which is required for RMD X series motor API.
-In order to setup can0 we can use following commands:
+In order to setup can0 we can use following commands(https://python-can.readthedocs.io/en/stable/interfaces/socketcan.html):
 ```bash
 sudo ip link set can0 up type can bitrate 1000000
 ```
-Author: [Tobit Flatscher](https://github.com/2b-t) (2023 - 2024)
 
-[![Tests](https://github.com/2b-t/myactuator_rmd/actions/workflows/run-tests.yml/badge.svg)](https://github.com/2b-t/myactuator_rmd/actions/workflows/run-tests.yml) [![codecov](https://codecov.io/gh/2b-t/myactuator_rmd/graph/badge.svg?token=VSDNKL4G4W)](https://codecov.io/gh/2b-t/myactuator_rmd) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/ab6c938baaac477e98c69cdf84d61420)](https://app.codacy.com/gh/2b-t/myactuator_rmd/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade) [![C++17 Standard](https://img.shields.io/badge/Standard-C++17-yellow.svg?style=flat&logo=c%2B%2B)](https://isocpp.org/std/the-standard) [![Python 3](https://img.shields.io/badge/Python-3-yellow.svg?style=flat&logo=python)](https://www.python.org/downloads/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+To check the CAN communication we can use following commands: 
+Terminal1:
+```bash
+cansend can0 001#0000112200000000
 
+```
+Terminal2:
+```bash
+candump can0 
 
+```
 
 ## 0. Overview
 This repository holds a **CAN driver software development kit** (SDK) for the [**MyActuator RMD X actuator series**](https://www.myactuator.com/rmd-x) written in modern C++17 using [Linux's SocketCAN](https://docs.kernel.org/networking/can.html). The driver SDK is also exposed to Python through Python bindings generated with [pybind11](https://github.com/pybind/pybind11).
