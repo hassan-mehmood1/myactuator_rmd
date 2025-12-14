@@ -1,6 +1,8 @@
 # PEAK PCAN-USB Module
 I have tested with Peak PCAN-USB opto-decoupled IPEH-002022 (https://www.peak-system.com/PCAN-USB.199.0.html?L=1).
+
 We do not need to install the driver since PCAN Module comes with default linux socket-can driver (https://python-can.readthedocs.io/en/stable/interfaces/pcan.html) which is required for RMD X series motor API.
+
 In order to setup can0 we can use following commands(https://python-can.readthedocs.io/en/stable/interfaces/socketcan.html):
 ```bash
 sudo ip link set can0 up type can bitrate 1000000
