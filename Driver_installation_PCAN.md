@@ -44,42 +44,65 @@ After having installed its dependencies you will have to install the driver SDK 
 
 
 
-### 1.1 Building the C++ library
+### 1.1 Building the C++ library and Installing Python package
 
-For **building the C++ driver SDK** open a new terminal inside this folder and execute the following commands. On older versions of Linux the build might fail with the error message `error: 'const struct can_frame' has no member named 'len'` and you will have to apply the code modification discussed in [issue #5](https://github.com/2b-t/myactuator_rmd/issues/5).
-
+Before building C++ or python library makesure that you have cmake>3.20. You can check cmake version by using following commands:
 ```bash
-$ mkdir build
-$ cd build
-$ cmake .. -D PYTHON_BINDINGS=on
-$ make -j $(nproc)
-$ sudo make install
+cmake --version
+# should be >= 3.20
+```
+If cmake is version is below 3.20 then you need to install it by using following commands:
+```bash
+sudo apt update
+sudo apt install -y ca-certificates gnupg software-properties-common wget
+
+# Add Kitware repository key + repo
+wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | \
+  gpg --dearmor | sudo tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
+
+echo "deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ focal main" | \
+  sudo tee /etc/apt/sources.list.d/kitware.list
+
+sudo apt update
+sudo apt install -y cmake
+```
+verify again:
+```bash
+cmake --version
+# should be >= 3.20
+```
+Then you need to build it by using following commands:
+```bash
+cd ~/myactuator_rmd
+rm -rf build
+mkdir build
+cd build
+
+cmake .. \
+  -D PYTHON_BINDINGS=on \
+  -D CMAKE_CXX_STANDARD=17 \
+  -D CMAKE_CXX_STANDARD_REQUIRED=ON \
+  -D CMAKE_POLICY_VERSION_MINIMUM=3.5
+
+cmake --build . -j$(nproc)
+
+cd ~/myactuator_rmd
+
+CMAKE_ARGS="-DCMAKE_CXX_STANDARD=17 -DCMAKE_POLICY_VERSION_MINIMUM=3.5" pip3 install .
+
+echo 'export PYTHONPATH=$PYTHONPATH:~/myactuator_rmd/build' >> ~/.bashrc
+
 ```
 
-The flag `PYTHON_BINDINGS` (defaults to `off`) builds the Python bindings additionally to the C++ library. In case you are only interested in using the C++ library feel free to leave it off. When building the Python bindings like this they will be compiled to a shared library but not be installed. This means you will either have to install the library manually or you will only be able to import them locally inside the `build` folder.
+Reboot
+```bash
+sudo reboot
+```
 
 For uninstalling the package again you can use [the following command](https://gitlab.kitware.com/cmake/community/-/wikis/FAQ#can-i-do-make-uninstall-with-cmake) `$ xargs rm < install_manifest.txt`.
 
-### 1.2 Installing Python package
 
-For **building and installing the Python bindings** for this SDK open a new terminal inside the main folder and execute the following command:
-
-```bash
-$ pip3 install .
-```
-
-This will use the `setup.py` to invoke CMake and install the bindings as a C++ library. If you want to remove them again simply invoke `$ pip3 uninstall myactuator-rmd-py`.
-
-### 1.3 Building with ROS 2
-
-For **building and installing this package with ROS 2** open a new terminal on then top-level folder of your Colcon workspace (e.g. `colcon_ws`) and execute the following command:
-
-```bash
-$ colcon build --cmake-args -D PYTHON_BINDINGS=on -D BUILD_TESTING=on
-```
-
-where the two flags following `--cmake-args` are optional.
-
+If you want to remove them again simply invoke `$ pip3 uninstall myactuator-rmd-py`.
 
 
 ## 2. Using the C++ library
