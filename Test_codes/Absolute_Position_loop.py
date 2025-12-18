@@ -5,8 +5,8 @@ import time
 driver = rmd.CanDriver("can0")
 actuator = rmd.ActuatorInterface(driver, 1)
 
-speed = 300.0      # deg/s
-wait_time = 2    # seconds
+speed = 50.0      # deg/s
+wait_time = 3    # seconds
 actuator.sendPositionAbsoluteSetpoint(0.0, 300)
 time.sleep(wait_time)
 angle = actuator.getMultiTurnAngle()
@@ -16,8 +16,8 @@ try:
     # Move to 10 degrees
     start_time = time.perf_counter()
     print("loop start")
-    while(angle<99):
-        actuator.sendPositionAbsoluteSetpoint(100.0, speed)
+    while(angle<178):
+        actuator.sendPositionAbsoluteSetpoint(180.0, speed)
         # time.sleep(wait_time)
         angle = actuator.getMultiTurnAngle()
     elapsed = time.perf_counter() - start_time
